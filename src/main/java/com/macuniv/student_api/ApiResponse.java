@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponse<T>
@@ -17,8 +19,8 @@ public class ApiResponse<T>
         return new ApiResponse<>(true,message,data);
     }
 
-    public static <T> ApiResponse<T> error(String error)
+    public static <T> ApiResponse<T> error(List<String> errors)
     {
-        return new ApiResponse<>(false,error,null);
+       return new ApiResponse<>(false,String.join(",",errors),null);
     }
 }

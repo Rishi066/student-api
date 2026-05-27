@@ -1,6 +1,7 @@
 package com.macuniv.student_api;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,14 +42,14 @@ public class StudentController
     }
 
     @PostMapping(value = "/students")
-    public ResponseEntity<ApiResponse<StudentDTO>> createStudent(@RequestBody StudentDTO studentDTO)
+    public ResponseEntity<ApiResponse<StudentDTO>> createStudent(@Valid @RequestBody StudentDTO studentDTO)
     {
         Student student = studentService.createStudent(studentDTO);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(mapper.toStudentDTO(student),"Student Created Successfully"));
     }
 
     @PutMapping(value = "/students/{student_id}")
-    public ResponseEntity<ApiResponse<StudentDTO>> updateStudent(@RequestBody StudentDTO studentDTO,@PathVariable long student_id)
+    public ResponseEntity<ApiResponse<StudentDTO>> updateStudent(@Valid @RequestBody StudentDTO studentDTO,@PathVariable long student_id)
     {
         Student student = studentService.updateStudent(studentDTO,student_id);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(mapper.toStudentDTO(student),"Student Updated Successfully"));
