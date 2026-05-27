@@ -26,7 +26,7 @@ public class StudentService
 
       public Student getStudentById(long id)
       {
-        return studentRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Student with that ID does not exist"));
+        return studentRepo.findById(id).orElseThrow(() -> new StudentNotFoundException("Student with that ID does not exist"));
       }
 
       public Student createStudent(StudentDTO studentDTO)
@@ -37,7 +37,7 @@ public class StudentService
 
       public Student updateStudent(StudentDTO studentDTO,long id)
       {
-        Student student = studentRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Student with that ID does not exist"));
+        Student student = studentRepo.findById(id).orElseThrow(() -> new StudentNotFoundException("Student with that ID does not exist"));
         student.setName(studentDTO.getName());
         student.setAge(studentDTO.getAge());
         student.setEmail(studentDTO.getEmail());
