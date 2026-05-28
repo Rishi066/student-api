@@ -3,6 +3,11 @@ package com.macuniv.student_api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,15 +27,29 @@ public class StudentController
     private final StudentMapper mapper;
 
     @GetMapping(value = "/students")
-    public ResponseEntity<ApiResponse<List<StudentDTO>>> getStudents()
+    public ResponseEntity<ApiResponse<Page<StudentDTO>>> getStudents(@RequestParam(defaultValue = "0") int pageNo,
+                                                                     @RequestParam(defaultValue = "10") int size,
+                                                                     @RequestParam(defaultValue = "id") String sortBy)
     {
-        List<Student> allStudents =  studentService.getAllStudents();
-        List<StudentDTO> allDTOStudents = new ArrayList<>();
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(pageNo,size,sort);
+
+        Page<Student> allStudents =  studentService.getAllStudents(pageable);
+        Page<StudentDTO> allDTOStudents = allStudents.map(mapper::toStudentDTO);
+//        List<StudentDTO> allDTOStudents = new ArrayList<>();
 //        for(Student student : allStudents) allDTOStudents.add(mapper.toStudentDTO(student));
         // Using Streams
-        allDTOStudents = allStudents.stream().map(mapper::toStudentDTO).collect(Collectors.toList());
+//        allDTOStudents = allStudents.stream().map(mapper::toStudentDTO).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(allDTOStudents,"All Students retrieved successfully"));
+    }
+
+    @GetMapping(value = "/students/search")
+    public ResponseEntity<ApiResponse<List<StudentDTO>>> getStudentsWithName(@RequestParam(value = "name") String studentName)
+    {
+        List<Student> students = studentService.getStudentsByName(studentName);
+        List<StudentDTO> allDTOStudents = students.stream().map(mapper::toStudentDTO).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(allDTOStudents,"Successfully Retrived Students With Given Name"));
     }
 
     @GetMapping(value = "/students/{student_id}")
