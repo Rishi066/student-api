@@ -9,19 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class StudentService
 {
-    private final StudentRepository studentRepo;
-    private final StudentMapper mapper;
-//    public StudentService(StudentRepository studentRepo)
-//    {
-//        this.studentRepo = studentRepo;
-//    }
+      private final StudentRepository studentRepo;
+      private final StudentMapper mapper;
 
       public Page<Student> getAllStudents(Pageable pageable)
       {

@@ -7,13 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,10 +32,6 @@ public class StudentController
 
         Page<Student> allStudents =  studentService.getAllStudents(pageable);
         Page<StudentDTO> allDTOStudents = allStudents.map(mapper::toStudentDTO);
-//        List<StudentDTO> allDTOStudents = new ArrayList<>();
-//        for(Student student : allStudents) allDTOStudents.add(mapper.toStudentDTO(student));
-        // Using Streams
-//        allDTOStudents = allStudents.stream().map(mapper::toStudentDTO).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(allDTOStudents,"All Students retrieved successfully"));
     }
@@ -49,13 +41,12 @@ public class StudentController
     {
         List<Student> students = studentService.getStudentsByName(studentName);
         List<StudentDTO> allDTOStudents = students.stream().map(mapper::toStudentDTO).collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(allDTOStudents,"Successfully Retrived Students With Given Name"));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(allDTOStudents,"Successfully Retrieved Students With Given Name"));
     }
 
     @GetMapping(value = "/students/{student_id}")
     public ResponseEntity<ApiResponse<StudentDTO>> getStudentById(@PathVariable long student_id)
     {
-
         Student student = studentService.getStudentById(student_id);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(mapper.toStudentDTO(student),"Student Retrieved Successfully"));
     }
@@ -64,7 +55,7 @@ public class StudentController
     public ResponseEntity<ApiResponse<StudentDTO>> createStudent(@Valid @RequestBody StudentDTO studentDTO)
     {
         Student student = studentService.createStudent(studentDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(mapper.toStudentDTO(student),"Student Created Successfully"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(mapper.toStudentDTO(student),"Student Created Successfully"));
     }
 
     @PutMapping(value = "/students/{student_id}")
