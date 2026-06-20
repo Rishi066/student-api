@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig
 {
     private final JwtFilter jwtFilter;
@@ -32,8 +34,10 @@ public class SecurityConfig
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
         http.authorizeHttpRequests(
-                auth -> auth.requestMatchers("/api/auth/register","/api/auth/login").permitAll()
-                        .anyRequest().authenticated()).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                auth -> auth.requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/students/**").authenticated()
+                        .anyRequest().denyAll())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 ;

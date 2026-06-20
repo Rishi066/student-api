@@ -15,4 +15,8 @@ public class Student
     private String email;
     private int age;
     private String branch;
+
+    @OneToOne
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private User user;
 }

@@ -44,5 +44,9 @@ public class GlobalExceptionHandler
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(List.of(ex.getMessage())));
     }
 
-
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<ApiResponse<String>> handleUnauthorizedAccessException(UnauthorizedAccessException ex)
+    {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.error(List.of(ex.getMessage())));
+    }
 }

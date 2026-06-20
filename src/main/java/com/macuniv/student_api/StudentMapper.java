@@ -15,12 +15,13 @@ public class StudentMapper
         return dto;
     }
 
-    public Student toStudent(StudentDTO dto)
+    public Student toStudent(CreateStudentRequestDTO createStudentRequestDTO)
     {
         Student student = new Student();
-        student.setName(dto.getName());
-        student.setEmail(dto.getEmail());
-        student.setAge(dto.getAge());
+        student.setName(createStudentRequestDTO.getName());
+        student.setEmail(createStudentRequestDTO.getEmail());
+        student.setAge(createStudentRequestDTO.getAge());
+        student.setBranch(createStudentRequestDTO.getBranch());
         return student;
     }
 }
