@@ -17,21 +17,25 @@ public class AuthController
 {
     private final AuthService authService;
     private final UserMapper mapper;
-    private final JwtService jwtService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<RegisterRequestDTO>> register(@RequestBody RegisterRequestDTO registerRequestDTO)
+    public ResponseEntity<ApiResponse<String>> register(@RequestBody RegisterRequestDTO registerRequestDTO)
     {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(mapper.UserToRegisterRequestDTO(authService.registerUser(registerRequestDTO)),"User Created Successfully"));
+        authService.registerUser(registerRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(null,"User Created Successfully"));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginRequestDTO loginRequestDTO)
+    public ResponseEntity<ApiResponse<AuthResponseDTO>> login(@RequestBody LoginRequestDTO loginRequestDTO)
     {
-        User user = authService.loginUser(loginRequestDTO);
-        String JwtToken = jwtService.generateToken(user);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(JwtToken,"Login Successfully"));
+        AuthResponseDTO authResponse = authService.loginUser(loginRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(authResponse,"Login Successfully"));
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<AuthResponseDTO>> refresh(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO)
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(authService.refreshJwtToken(refreshTokenRequestDTO),"JWT refreshed"));
+    }
 
 }

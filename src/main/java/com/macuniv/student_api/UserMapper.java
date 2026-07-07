@@ -9,14 +9,7 @@ public class UserMapper
         User user = new User();
         user.setUsername(registerRequestDTO.getUsername());
         user.setPassword(registerRequestDTO.getPassword());
-        user.setRole("ROLE_STUDENT");
+        user.setRole("ROLE_ADMIN");
         return user;
-    }
-
-    public RegisterRequestDTO UserToRegisterRequestDTO(User user)
-    {
-        RegisterRequestDTO registerRequestDTO = new RegisterRequestDTO();
-        registerRequestDTO.setUsername(user.getUsername());
-        return registerRequestDTO;
     }
 }

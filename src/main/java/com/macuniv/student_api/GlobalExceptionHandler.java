@@ -49,4 +49,10 @@ public class GlobalExceptionHandler
     {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.error(List.of(ex.getMessage())));
     }
+
+    @ExceptionHandler(RefreshTokenInvalidException.class)
+    public ResponseEntity<ApiResponse<String>> handleRefreshTokenInvalidException(RefreshTokenInvalidException ex)
+    {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error((List.of(ex.getMessage()))));
+    }
 }
