@@ -24,6 +24,7 @@ public class StudentService
       private final UserMapper userMapper;
       private final StudentMapper studentMapper;
       private final PasswordEncoder encoder;
+      private final RefreshTokenRepository refreshTokenRepo;
       public Page<Student> getAllStudents(Pageable pageable)
       {
         return studentRepo.findAll(pageable);
@@ -77,9 +78,25 @@ public class StudentService
       }
 
       @Transactional
-      public void deleteStudent(long id)
-      {
-         studentRepo.deleteById(id);
+      public void deleteStudent(long id) {
+          Student student = studentRepo.findById(id)
+                  .orElseThrow(() -> new StudentNotFoundException("Student not found"));
+
+          User user = student.getUser();
+
+          //delete refresh token first
+          if (user != null) {
+              refreshTokenRepo.findByUser(user).ifPresent(refreshTokenRepo::delete);
+          }
+
+          //delete student
+          studentRepo.deleteById(id);
+
+          //delete user
+          if (user != null) {
+              userRepo.delete(user);
+
+          }
       }
 
       public List<Student> getStudentsByName(String name)
